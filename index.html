@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dota Graph Stats</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    .panel { border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; }
+  </style>
+</head>
+<body>
+  <h1>Dota Graph Stats</h1>
+
+  <div class="panel">
+    <label>Account ID игрока:
+      <input type="number" id="accountId" />
+    </label>
+    <button id="loadBtn">Загрузить статистику</button>
+  </div>
+
+  <div class="panel" id="summary"></div>
+  <div class="panel" id="heroes"></div>
+  <div class="panel" id="allies"></div>
+  <div class="panel" id="enemies"></div>
+
+  <script>
+    document.getElementById('loadBtn').addEventListener('click', async () => {
+      const accountId = document.getElementById('accountId').value;
+      if (!accountId) return;
+
+      // Здесь ты будешь дергать свой backend, который ходит в Neo4j
+      const stats = await fetch(`/api/player/${accountId}/summary`).then(r => r.json());
+      const heroes = await fetch(`/api/player/${accountId}/heroes`).then(r => r.json());
+      const allies = await fetch(`/api/player/${accountId}/allies`).then(r => r.json());
+      const enemies = await fetch(`/api/player/${accountId}/enemies`).then(r => r.json());
+
+      document.getElementById('summary').innerText = JSON.stringify(stats, null, 2);
+      document.getElementById('heroes').innerText = JSON.stringify(heroes, null, 2);
+      document.getElementById('allies').innerText = JSON.stringify(allies, null, 2);
+      document.getElementById('enemies').innerText = JSON.stringify(enemies, null, 2);
+    });
+  </script>
+</body>
+</html>
